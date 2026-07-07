@@ -1,0 +1,1 @@
+$f=Join-Path $PSScriptRoot '.runtime\pid';if(Test-Path $f){$id=Get-Content $f;if(Get-Process -Id $id -ErrorAction SilentlyContinue){Stop-Process -Id $id};Remove-Item $f -Force};Write-Host 'Sequence Inspector stopped.'
