@@ -1,3 +1,5 @@
+[CmdletBinding()]
+param([switch]$NoBrowser)
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $runtime = Join-Path $root ".runtime"
@@ -40,6 +42,6 @@ if (-not $ready) {
   throw "Sequence Inspector failed to start. See $stderr"
 }
 @{ pid = $process.Id; port = $port; url = $url } | ConvertTo-Json | Set-Content (Join-Path $runtime "run.json")
-Start-Process $url
+if (-not $NoBrowser) { Start-Process $url }
 Write-Host "Sequence Inspector: $url"
 Write-Host "Use stop_windows.ps1 to stop."

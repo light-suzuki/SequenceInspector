@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - shell: pwsh
+        run: |
+          try {
+            .\start_windows.ps1 -NoBrowser
+            $state = Get-Content .runtime\run.json -Raw | ConvertFrom-Json
+            $response = Invoke-WebRequest $state.url -UseBasicParsing
+            if ($response.StatusCode -ne 200) { throw "Unexpected HTTP status" }
+          } finally {
+            .\stop_windows.ps1
+          }
+
