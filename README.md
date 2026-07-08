@@ -1,23 +1,66 @@
 # Sequence Inspector
 
-A small, offline, bilingual (English/Japanese) DNA sequence inspector for Windows. It reports length, GC content, ORF candidates, and common restriction sites. Analysis happens entirely in the browser.
+A small offline DNA sequence inspector for Windows. It calculates sequence
+length, GC content, ORF candidates, and common restriction sites entirely in the
+browser. English and Japanese are included in the single HTML file.
 
-## Windows
+Windows向けの小さなオフラインDNA配列確認ツールです。配列長、GC含量、ORF候補、
+代表的な制限酵素サイトをブラウザ内だけで計算します。
 
-1. Download and extract this repository.
-2. Install Python 3 if it is not already installed.
-3. Double-click `start_windows.bat`.
-4. Run `stop_windows.ps1` when finished.
+## Requirements / 必要条件
 
-No genome data, BLAST installation, npm, or internet connection is required after download.
+- Windows 10 or 11
+- Python 3 with either the `py` or `python` command
+- A modern browser
 
-## 日本語
+No WSL, Node.js, BLAST, Primer3, genome download, or internet connection is
+required after cloning.
 
-Windows向けの小さな英日対応DNA配列確認ツールです。配列長、GC含量、ORF候補、代表的な制限酵素サイトをブラウザ内だけで計算します。
+## Install and start / 導入と起動
 
-1. このリポジトリをダウンロードして展開します。
-2. Python 3が未導入ならインストールします。
-3. `start_windows.bat` をダブルクリックします。
-4. 終了時は `stop_windows.ps1` を実行します。
+```powershell
+git clone https://github.com/light-suzuki/SequenceInspector.git
+cd SequenceInspector
+.\start_windows.bat
+```
 
-MIT License. Results are computational aids and should be independently validated before experimental use. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
+The launcher selects the first free localhost port from 8765 through 8785,
+verifies the HTTP response, then opens the browser. The chosen URL is printed in
+the terminal and saved only in `.runtime\run.json`.
+
+8765が使用中でも失敗せず、8765〜8785から空きポートを選んでHTTP応答確認後に開きます。
+
+Stop only the server started by this clone:
+
+```powershell
+.\stop_windows.ps1
+```
+
+## Use / 使い方
+
+Paste a raw DNA sequence or FASTA record. The tool normalizes whitespace and
+case locally. Do not treat computed ORFs or restriction sites as experimental
+validation.
+
+DNA配列またはFASTAを貼り付けます。入力配列は外部へ送信されません。結果は実験前に
+必ず独立に確認してください。
+
+## Verify / 検証
+
+```powershell
+.\start_windows.ps1
+$state = Get-Content .runtime\run.json -Raw | ConvertFrom-Json
+Invoke-WebRequest $state.url -UseBasicParsing
+.\stop_windows.ps1
+```
+
+## Clean removal / 完全削除
+
+Run `stop_windows.ps1`, then delete the cloned folder. There are no global
+dependencies, databases, virtual environments, or user-data folders created by
+this project.
+
+## Privacy, license, and contributors
+
+Analysis is browser-only. No genome, sequence, accession, credential, personal
+path, or result is bundled. MIT License. See [CONTRIBUTORS.md](CONTRIBUTORS.md).
