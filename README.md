@@ -1,5 +1,11 @@
 # Sequence Inspector
 
+[![CI](https://github.com/light-suzuki/SequenceInspector/actions/workflows/ci.yml/badge.svg)](https://github.com/light-suzuki/SequenceInspector/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/light-suzuki/=semver)](https://github.com/light-suzuki/SequenceInspector/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub Pages](https://img.shields.io/badge/demo-GitHub%20Pages-blue)](https://light-suzuki.github.io/SequenceInspector/)
+
+
 A small offline DNA sequence inspector for Windows. It calculates sequence
 length, GC content, ORF candidates, and common restriction sites entirely in the
 browser. English and Japanese are included in the single HTML file.
