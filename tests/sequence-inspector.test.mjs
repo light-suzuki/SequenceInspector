@@ -50,7 +50,7 @@ test('normalizes raw DNA and one multiline FASTA record', () => {
   }
 });
 
-for (const stop of ['TAA', 'TAG', 'TGA']) {
+for (const stop of ['TAA', 'TAG', 'TGA', 'TAR', 'TRA']) {
   for (let offset = 0; offset < 3; offset++) {
     test(`30-aa minimum excludes stop codon: ${stop}, frame ${offset + 1}`, () => {
       const inspector = app();
@@ -107,4 +107,42 @@ test('accepts the documented IUPAC DNA alphabet', () => {
   const result = app().analyze('ACGTRYSWKMBDHVN');
   assert.equal(result.error.textContent, '');
   assert.equal(result.result.hidden, false);
+});
+
+test('certain ambiguous stops terminate candidates before the minimum', () => {
+  for (const stop of ['TAR', 'TRA']) {
+    assert.deepEqual(app().orfs('ATG' + stop + 'AAA'.repeat(29) + 'TAA'), []);
+  }
+});
+
+test('mixed sense/stop ambiguity does not imply a certain stop', () => {
+  for (const codon of ['TGR', 'TRR', 'NNN', 'GCN', 'ATH']) {
+    assert.deepEqual(app().orfs('ATG' + codon + 'AAA'.repeat(28) + 'TAA'), [
+      { f: 1, s: 1, e: 93, l: 30 },
+    ]);
+  }
+});
+
+test('nested starts and partial trailing codons preserve candidate coordinates', () => {
+  const sequence = 'ATGATG' + 'AAA'.repeat(29) + 'TAA';
+  const expected = [{ f: 1, s: 1, e: 96, l: 31 }, { f: 1, s: 4, e: 96, l: 30 }];
+  for (const suffix of ['', 'A', 'AT']) assert.deepEqual(app().orfs(sequence + suffix), expected);
+  assert.deepEqual(app().orfs('ATG' + 'AAA'.repeat(29) + 'TA'), []);
+});
+
+test('normalizes BOM, line endings and surrounding FASTA whitespace', () => {
+  for (const separator of ['\n', '\r\n', '\r']) {
+    const result = app().analyze('\ufeff  >record' + separator + '  gaa ' + separator + '\tttc\t');
+    assert.equal(result.error.textContent, '');
+    assert.equal(result.summary.textContent, 'Length: 6 bp · GC: 33.33%');
+  }
+});
+
+test('rejects sequence data before a FASTA header and indented multiple headers', () => {
+  for (const raw of ['GAA\n>record\nTTC', 'GAA\r>record\rTTC', '\ufeff>one\r\nGAA\r\n  >two\r\nTTC']) {
+    const result = app().analyze(raw);
+    assert.equal(result.error.textContent, 'Enter only one FASTA record at a time.');
+    assert.equal(result.result.hidden, true);
+    assert.equal(result.cuts.innerHTML, '');
+  }
 });
