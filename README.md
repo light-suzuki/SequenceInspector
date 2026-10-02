@@ -44,12 +44,15 @@ Stop only the server started by this clone:
 
 ## Use / 使い方
 
-Paste a raw DNA sequence or FASTA record. The tool normalizes whitespace and
-case locally. Do not treat computed ORFs or restriction sites as experimental
+Paste a raw DNA sequence or a single FASTA record. Multiple FASTA records are
+rejected to avoid joining unrelated sequences. The tool normalizes whitespace
+and case locally. ORF candidates must contain at least 30 amino acids, excluding
+the stop codon. Do not treat computed ORFs or restriction sites as experimental
 validation.
 
-DNA配列またはFASTAを貼り付けます。入力配列は外部へ送信されません。結果は実験前に
-必ず独立に確認してください。
+DNA配列またはFASTAを1レコードずつ貼り付けます。無関係な配列の連結を防ぐため、
+複数レコードは受け付けません。ORF候補は終止コドンを除いて30 aa以上です。
+入力配列は外部へ送信されません。結果は実験前に必ず独立に確認してください。
 
 ## Verify / 検証
 
@@ -59,6 +62,17 @@ $state = Get-Content .runtime\run.json -Raw | ConvertFrom-Json
 Invoke-WebRequest $state.url -UseBasicParsing
 .\stop_windows.ps1
 ```
+
+Contributors can also run the analysis regression tests on Windows, Linux, or
+macOS with Node.js 22 or later (built-in modules only, no package installation):
+
+```sh
+node --test tests/sequence-inspector.test.mjs
+```
+
+These tests execute the inline script from `index.html` with small DOM stand-ins.
+They cover calculation and validation behavior, not browser rendering or the
+Windows launcher. Node.js is only needed for these tests, not to use the app.
 
 ## Clean removal / 完全削除
 
