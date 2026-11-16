@@ -1,7 +1,7 @@
 # Sequence Inspector
 
 [![CI](https://github.com/light-suzuki/SequenceInspector/actions/workflows/ci.yml/badge.svg)](https://github.com/light-suzuki/SequenceInspector/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/light-suzuki/=semver)](https://github.com/light-suzuki/SequenceInspector/releases)
+[![Release](https://img.shields.io/github/v/release/light-suzuki/SequenceInspector?sort=semver)](https://github.com/light-suzuki/SequenceInspector/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![GitHub Pages](https://img.shields.io/badge/demo-GitHub%20Pages-blue)](https://light-suzuki.github.io/SequenceInspector/)
 
